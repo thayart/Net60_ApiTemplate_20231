@@ -18,6 +18,12 @@ namespace Net60_ApiTemplate_20231
              * CreateMap<ExampleModels, GetExampleReponseDto>();
              */
 
+
+            CreateMap<FilterDataDto, PaginationDto>();
+            CreateMap<FilterDataDto, QueryFilterDto>();
+            CreateMap<FilterDataDto, QuerySortDto>();
+
+
             #region Product Group
             // /// 
             // /// Create Set
@@ -38,9 +44,7 @@ namespace Net60_ApiTemplate_20231
             // /// Create Get Set
             // /// 
             CreateMap<DeleteProductGroupDto, ProductGroup>();
-            CreateMap<FilterDataDto, PaginationDto>();
-            CreateMap<FilterDataDto, QueryFilterDto>();
-            CreateMap<FilterDataDto, QuerySortDto>();
+           
 
             // /// 
             // /// Create Delete Set
@@ -92,6 +96,8 @@ namespace Net60_ApiTemplate_20231
             CreateMap<Order, OrderResponseDto>();
 
             CreateMap<OrderDetail, OrderDetailsResponseDto>();
+
+            CreateMap<ProductDto, OrderDetailsResponseDto>();
 
 
             // /// 

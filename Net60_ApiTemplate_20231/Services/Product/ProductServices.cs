@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Net60_ApiTemplate_20231.Data;
+using Net60_ApiTemplate_20231.DTOs;
 using Net60_ApiTemplate_20231.DTOs.Products;
+using Net60_ApiTemplate_20231.Helpers;
 using Net60_ApiTemplate_20231.Models;
 using Net60_ApiTemplate_20231.Services.Auth;
 using Serilog;
@@ -12,108 +17,158 @@ namespace Net60_ApiTemplate_20231.Services.Product
     {
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContext;
+        private readonly HttpContext? _httpContext;
         private readonly ILoginDetailServices _loginDetailServices;
+        private readonly Serilog.ILogger _logger;
 
-        public ProductServices(AppDBContext dbContext, IMapper mapper, IHttpContextAccessor httpContext, ILoginDetailServices loginDetailServices) : base(dbContext, mapper, httpContext)
+        public ProductServices(AppDBContext dbContext, IMapper mapper, IHttpContextAccessor httpContext, ILoginDetailServices loginDetailServices, Serilog.ILogger? logger = null) : base(dbContext, mapper, httpContext)
         {
             _dbContext = dbContext;
             _mapper = mapper;
-            _httpContext = httpContext;
+            _httpContext = httpContext.HttpContext;
             _loginDetailServices = loginDetailServices;
+            _logger = logger is null ? Log.ForContext("ServiceName", nameof(ProductServices)) : logger.ForContext("ServiceName", nameof(ProductServices));
         }
 
         public async Task<ProductResponseDto> CreateProduct(ProductRequestDto productRequestDto)
         {
-            const string _serviceName = nameof(Product);
+            const string actionName = nameof(CreateProduct);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
-            int userId = _loginDetailServices.GetClaim().UserId;
+            var user = _loginDetailServices.GetClaim();
 
-            Models.Product product = _mapper.Map<Models.Product>(productRequestDto);
+            // Setup Data
+            var product = _mapper.Map<Models.Product>(productRequestDto);
 
             product.ProductId = Guid.NewGuid();
-            product.CreatedByUserId = userId;
+            product.CreatedByUserId = user.UserId;
             product.CreatedDate = DateTime.Now;
             product.UpdatedDate = DateTime.Now;
-            product.UpdatedByUserId = userId;
+            product.UpdatedByUserId = user.UserId;
             product.isActive = true;
             _dbContext.Add(product);
             await _dbContext.SaveChangesAsync();
 
-            ProductResponseDto dto = _mapper.Map<ProductResponseDto>(product);
+            // Return Data MaptoDto
+            var dto = _mapper.Map<ProductResponseDto>(product);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Sussess: {date} - Id:{ProductId} ", actionName, DateTime.Now, dto.ProductId);
 
             return dto;
         }
 
-        public async Task<UpdateProductResponseDto> UpdateProduct(Guid ProductId, UpdateProductRequestDto updateProductRequestDto)
+        public async Task<UpdateProductResponseDto> UpdateProduct(Guid productId, UpdateProductRequestDto updateProductRequestDto)
         {
-            const string _serviceName = nameof(Product);
+            const string actionName = nameof(Product);
+            //var logContext = _logger.ForContext("ActionName", nameof(UpdateProduct));
+            //logContext.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date} - Id:{ProductId} ", actionName, DateTime.Now, productId);
 
-            int userId = _loginDetailServices.GetClaim().UserId;
+            var user = _loginDetailServices.GetClaim();
 
-            Models.Product updateproduct = _mapper.Map<Models.Product>(updateProductRequestDto);
-
-            Models.Product? getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == ProductId);
-            getProduct.ProductGroupId = updateproduct.ProductGroupId;
-            getProduct.ProductName = updateproduct.ProductName;
-            getProduct.ProductPrice = updateproduct.ProductPrice;
-            getProduct.isActive = updateproduct.isActive;
-
+            // Setup UpdateData
+            var getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == productId);
+            getProduct = _mapper.Map(updateProductRequestDto , getProduct);
+            getProduct.UpdatedDate = DateTime.Now;
+            getProduct.UpdatedByUserId = user.UserId;
+            
             _dbContext.Update(getProduct);
             await _dbContext.SaveChangesAsync();
 
+            //Return Data MaptoDto
             var dto = _mapper.Map<UpdateProductResponseDto>(getProduct);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Sussess: {date} - Id:{ProductId} ", actionName, DateTime.Now, productId);
 
             return dto;
         }
 
         public async Task<DeleteProductResponseDto> DeleteProduct(Guid productId)
         {
-            const string _serviceName = nameof(DeleteProduct);
+            const string actionName = nameof(DeleteProduct);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date} - Id:{ProductId} ", actionName, DateTime.Now, productId);
 
-            int userId = _loginDetailServices.GetClaim().UserId;
+            var user = _loginDetailServices.GetClaim();
 
-            Models.Product? getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == productId);
-
+            // Setup DeleteData
+            var getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == productId);
             getProduct.UpdatedDate = DateTime.Now;
-            getProduct.UpdatedByUserId = userId;
+            getProduct.UpdatedByUserId = user.UserId;
             getProduct.isActive = false;
 
             _dbContext.Update(getProduct);
             await _dbContext.SaveChangesAsync();
 
-            DeleteProductResponseDto dto = _mapper.Map<DeleteProductResponseDto>(getProduct);
+            // Return Data MaptoDto
+            var dto = _mapper.Map<DeleteProductResponseDto>(getProduct);
 
-            Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Sussess: {date} - Id:{ProductId} ", actionName, DateTime.Now, productId);
 
             return dto;
         }
 
         public async Task<ProductDto> GetProductById(Guid productId)
         {
-            const string _serviceName = nameof(GetProductById);
+            const string actionName = nameof(GetProductById);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date} - Id:{ProductId} ", actionName, DateTime.Now, productId);
 
-            int userId = _loginDetailServices.GetClaim().UserId;
+            // Setup GetData
+            var getProduct =await _dbContext.Products.Where(f => f.ProductGroupId == productId).ToListAsync();
+            //var product = await _dbContext.Products
+            //    .Where(f => f.ProductId == productId)
+            //    .ProjectTo<ProductDto>(_mapper.ConfigurationProvider)
+            //    .FirstOrDefaultAsync();
 
-            Models.Product? getProduct = await _dbContext.Products.FirstOrDefaultAsync(f => f.ProductId == productId);
+            // Return Data MaptoDto
+            var dto = _mapper.Map<ProductDto>(getProduct);
 
-            ProductDto dto = _mapper.Map<ProductDto>(getProduct);
-
-            Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Sussess: {date} - Id:{ProductId} ", actionName, DateTime.Now, productId);
 
             return dto;
+        }
+
+        public async Task<(List<ProductDto> productDtos, PaginationResultDto pagination)> GetAllProduct(
+            [FromQuery] PaginationDto paginationDto
+            , [FromQuery] QueryFilterDto filterDto
+            , [FromQuery] QuerySortDto sortDto
+            )
+        {
+            const string actionName = nameof(GetAllProduct);
+
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
+
+            // Setup GetListData
+            var getProducts = _dbContext.Products.AsQueryable();
+
+            // Flag IsActive
+            if (paginationDto.isActive != null)
+            {
+                getProducts = getProducts.Where(w => w.isActive == paginationDto.isActive);
+            }
+
+            // Filter Data By Field
+            getProducts = getProducts.FilterQuery(filterDto);
+
+            // Sort Data By Field
+            getProducts = getProducts.SortQuery(sortDto);
+
+            // Check Pagination
+            var ordersPaginationResult = await _httpContext.InsertPaginationParametersInResponse(
+                getProducts, paginationDto.RecordsPerPage, paginationDto.Page);
+
+            // Add Pagination
+            var addPagination = await getProducts.Paginate(paginationDto).ToListAsync();
+
+            // Return Data MaptoDto
+            var dto = _mapper.Map<List<ProductDto>>(addPagination);
+
+            _logger.Debug("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
+
+            return (dto, ordersPaginationResult);
         }
     }
 }

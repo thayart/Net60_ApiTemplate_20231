@@ -1,4 +1,6 @@
-﻿using Net60_ApiTemplate_20231.DTOs.Orders;
+﻿using Microsoft.AspNetCore.Mvc;
+using Net60_ApiTemplate_20231.DTOs;
+using Net60_ApiTemplate_20231.DTOs.Orders;
 using Net60_ApiTemplate_20231.DTOs.Products;
 
 namespace Net60_ApiTemplate_20231.Services.Product
@@ -9,5 +11,10 @@ namespace Net60_ApiTemplate_20231.Services.Product
         Task<UpdateProductResponseDto> UpdateProduct(Guid ProductId, UpdateProductRequestDto updateProductRequestDto);
         Task<DeleteProductResponseDto> DeleteProduct(Guid productId);
         Task<ProductDto> GetProductById(Guid productId);
+        Task<(List<ProductDto> productDtos, PaginationResultDto pagination)> GetAllProduct(
+            [FromQuery] PaginationDto paginationDto
+            , [FromQuery] QueryFilterDto filterDto
+            , [FromQuery] QuerySortDto sortDto
+            );
     }
 }

@@ -6,6 +6,6 @@ namespace Net60_ApiTemplate_20231.Services.Order
     {
         Task<OrderResponseDto> CreateOrder(OrderRequestDto orderRequestDto);
         Task<DeleteOrderResponseDto> DeleteOrder(Guid orderId);
-        Task<OrderDto> GetOrderById(Guid orderId);
+        Task<OrderResponseDto> GetOrderById(Guid orderId);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Net60_ApiTemplate_20231.DTOs.Products;
 
 namespace Net60_ApiTemplate_20231.DTOs.Orders
 {
@@ -52,6 +53,7 @@ namespace Net60_ApiTemplate_20231.DTOs.Orders
         public int CreatedByUserId { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool isActive { get; set; }
+        public ProductDto? Products { get; set; }
     }
 
     public class DeleteOrderResponseDto
@@ -59,6 +61,7 @@ namespace Net60_ApiTemplate_20231.DTOs.Orders
         public Guid OrderId { get; set; }
         public bool isActive { get; set; }
     }
+
 
 
 }

@@ -5,7 +5,7 @@ namespace Net60_ApiTemplate_20231.DTOs.Products
     /// <summary>
     /// 
     /// </summary>
-    public class ProductGroupDto
+    public class ProductGroupDto : IValidatableObject
     {
         public Guid ProductGrouptId { get; set; }
         public string? ProductGroupName { get; set; }
@@ -14,6 +14,15 @@ namespace Net60_ApiTemplate_20231.DTOs.Products
         public int UpdatedByUserId { get; set; }
         public DateTime UpdatedDate { get; set; }
         public bool isActive { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (string.IsNullOrWhiteSpace(ProductGroupName))
+                yield return new ValidationResult("Product group could not be null or empty", new[] { "PrductGroupName" });
+
+            //if (CreatedByUserId != 1 && UpdatedByUserId != 1)
+            //    yield return new ValidationResult("User must be 1", new[] { "CreatedByUserId", "UpdatedByUserId" });
+        }
     }
 
     public class CreateProductGroupDto
@@ -48,14 +57,4 @@ namespace Net60_ApiTemplate_20231.DTOs.Products
         public bool isActive { get; set; }
     }
 
-    public class FilterDataDto
-    {
-        public bool? isActive { get; set; }
-        public int Page { get; set; }
-        public int RecordsPerPage { get; set; }
-        public string? Column { get; set; }
-        public string? Contain { get; set; }
-        public string? SortColumn { get; set; }
-        public string? Ordering { get; set; }
-    }
 }

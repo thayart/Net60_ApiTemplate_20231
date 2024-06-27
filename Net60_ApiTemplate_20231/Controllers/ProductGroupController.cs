@@ -15,86 +15,118 @@ namespace Net60_ApiTemplate_20231.Controllers
     /// </summary>
     [Route("api/product-group")]
     [ApiController]
+    //[Authorize]
     public class ProductGroupController : ControllerBase
     {
-
         private readonly IProductGroupServices _productGroupServices;
-        public ProductGroupController(IProductGroupServices productGroupServices)
+        private readonly Serilog.ILogger _logger;
+
+        public ProductGroupController(IProductGroupServices productGroupServices, Serilog.ILogger? logger = null)
         {
             _productGroupServices = productGroupServices;
+            _logger = logger is null ? Log.ForContext("ServiceName", nameof(ProductGroupServices)) : logger.ForContext("ServiceName", nameof(ProductGroupServices));
         }
 
-        [HttpPost]
+        /// <summary>
+        ///     CreateProductGroup
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpPost(Name = "CreateProductGroup")]
         public async Task<ServiceResponse<ProductGroupDto>> CreateProductGroup([FromBody] CreateProductGroupDto creatProductGroupDto)
         {
-            const string _serviceName = nameof(CreateProductGroup);
+            const string actionName = nameof(CreateProductGroup);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
             ProductGroupDto result = await _productGroupServices.CreateProductGroup(creatProductGroupDto);
 
-            Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Information("[{actionName}] - Sussess: {date} - Id:{ProductGrouptId}", actionName, DateTime.Now, result.ProductGrouptId);
 
             return ResponseResult.Success(result);
         }
 
-
-        [HttpPost("{productGroupId}")]
+        /// <summary>
+        ///     UpdateProductGroup
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpPost("{productGroupId}", Name = "UpdateProductGroup")]
         public async Task<ServiceResponse<UpdateProductGroupResponseDto>> UpdateProductGroup(Guid productGroupId, [FromBody] UpdateProductGroupDto updateProductGroupDto)
         {
-            const string _serviceName = nameof(UpdateProductGroup);
+            const string actionName = nameof(UpdateProductGroup);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
             UpdateProductGroupResponseDto result = await _productGroupServices.UpdateProductGroup(productGroupId, updateProductGroupDto);
 
-
-            Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Information("[{actionName}] - Sussess: {date} - Id:{ProductGrouptId}", actionName, DateTime.Now , productGroupId);
             return ResponseResult.Success(result);
 
         }
 
-
-        [HttpPost("{productGroupId}/Delete")]
+        /// <summary>
+        ///     DeleteProductGroup
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpPost("{productGroupId}/delete", Name = "DeleteProductGroup")]
         public async Task<ServiceResponse<DeleteProductGroupResponseDto>> DeleteProductGroup(Guid productGroupId)
         {
-            const string _serviceName = nameof(DeleteProductGroup);
+            const string actionName = nameof(DeleteProductGroup);
 
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
             DeleteProductGroupResponseDto result = await _productGroupServices.DeleteProductGroup(productGroupId);
 
 
-            Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Information("[{actionName}] - Sussess: {date} - Id:{ProductGrouptId}", actionName, DateTime.Now , productGroupId);
             return ResponseResult.Success(result);
 
         }
 
-        [HttpGet("{productGroupId}")]
+        /// <summary>
+        ///     GetProductGroupById
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpGet("{productGroupId}", Name = "GetProductGroupById")]
         public async Task<ServiceResponse<ProductGroupDto>> GetProductGroupById(Guid productGroupId)
         {
-            const string _serviceName = nameof(GetProductGroupById);
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
-
+            const string actionName = nameof(GetProductGroupById);
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
             ProductGroupDto result = await _productGroupServices.GetProductGroupById(productGroupId);
 
-            Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Information("[{actionName}] - Sussess: {date} - Id:{ProductGrouptId}", actionName, DateTime.Now , productGroupId);
 
             return ResponseResult.Success(result);
 
         }
 
-
-        [HttpGet("filter")]
-        public async Task<ServiceResponse<(List<ProductGroupDto> productGroupDtos, PaginationResultDto pagination)>> GetAllProductGroups([FromQuery] FilterDataDto filterDataDto)
+        /// <summary>
+        ///     GetAllProductGroups
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpGet("filter", Name = "GetAllProductGroups")]
+        public async Task<ServiceResponse<(List<ProductGroupDto> productGroupDtos, PaginationResultDto pagination)>> GetAllProductGroups(
+            [FromQuery]   PaginationDto paginationDto 
+            , [FromQuery] QueryFilterDto filterDto
+            , [FromQuery] QuerySortDto sortDto
+            )
         {
-            const string _serviceName = nameof(GetAllProductGroups);
-            Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
+            const string actionName = nameof(GetAllProductGroups);
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
-            var result = await _productGroupServices.GetAllProductGroup(filterDataDto);
+            var result = await _productGroupServices.GetAllProductGroup(paginationDto,filterDto, sortDto);
 
-            Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
+            _logger.Information("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
 
             return ResponseResult.Success(result);
         }
