@@ -31,7 +31,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _productGroupServices.CreateProductGroup(creatProductGroupDto);
+            ProductGroupDto result = await _productGroupServices.CreateProductGroup(creatProductGroupDto);
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 
@@ -46,7 +46,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _productGroupServices.UpdateProductGroup(productGroupId, updateProductGroupDto);
+            UpdateProductGroupResponseDto result = await _productGroupServices.UpdateProductGroup(productGroupId, updateProductGroupDto);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -62,7 +62,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _productGroupServices.DeleteProductGroup(productGroupId);
+            DeleteProductGroupResponseDto result = await _productGroupServices.DeleteProductGroup(productGroupId);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -77,7 +77,7 @@ namespace Net60_ApiTemplate_20231.Controllers
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
 
-            var result = await _productGroupServices.GetProductGroupById(productGroupId);
+            ProductGroupDto result = await _productGroupServices.GetProductGroupById(productGroupId);
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 

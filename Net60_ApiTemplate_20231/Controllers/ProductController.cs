@@ -27,7 +27,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _productServices.CreateProduct(productRequestDto);
+            ProductResponseDto result = await _productServices.CreateProduct(productRequestDto);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -42,7 +42,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _productServices.UpdateProduct(productId, updateProductRequestDto);
+            UpdateProductResponseDto result = await _productServices.UpdateProduct(productId, updateProductRequestDto);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -59,7 +59,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _productServices.DeleteProduct(productId);
+            DeleteProductResponseDto result = await _productServices.DeleteProduct(productId);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -75,7 +75,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await  _productServices.GetProductById(productId);
+            ProductDto result = await  _productServices.GetProductById(productId);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);

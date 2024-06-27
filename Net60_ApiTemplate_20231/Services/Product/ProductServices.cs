@@ -8,7 +8,7 @@ using Serilog;
 
 namespace Net60_ApiTemplate_20231.Services.Product
 {
-    public class ProductServices : ServiceBase , IProductServices
+    public class ProductServices : ServiceBase, IProductServices
     {
         private readonly AppDBContext _dbContext;
         private readonly IMapper _mapper;
@@ -29,9 +29,9 @@ namespace Net60_ApiTemplate_20231.Services.Product
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
+            int userId = _loginDetailServices.GetClaim().UserId;
 
-            var product = _mapper.Map<Models.Product>(productRequestDto);
+            Models.Product product = _mapper.Map<Models.Product>(productRequestDto);
 
             product.ProductId = Guid.NewGuid();
             product.CreatedByUserId = userId;
@@ -42,24 +42,24 @@ namespace Net60_ApiTemplate_20231.Services.Product
             _dbContext.Add(product);
             await _dbContext.SaveChangesAsync();
 
-            var dto = _mapper.Map<ProductResponseDto>(product);
+            ProductResponseDto dto = _mapper.Map<ProductResponseDto>(product);
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
             return dto;
         }
 
-        public async  Task<UpdateProductResponseDto> UpdateProduct(Guid ProductId , UpdateProductRequestDto updateProductRequestDto)
+        public async Task<UpdateProductResponseDto> UpdateProduct(Guid ProductId, UpdateProductRequestDto updateProductRequestDto)
         {
             const string _serviceName = nameof(Product);
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
+            int userId = _loginDetailServices.GetClaim().UserId;
 
-            var updateproduct = _mapper.Map<Models.Product>(updateProductRequestDto);
+            Models.Product updateproduct = _mapper.Map<Models.Product>(updateProductRequestDto);
 
-            var getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == ProductId);
+            Models.Product? getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == ProductId);
             getProduct.ProductGroupId = updateproduct.ProductGroupId;
             getProduct.ProductName = updateproduct.ProductName;
             getProduct.ProductPrice = updateproduct.ProductPrice;
@@ -81,9 +81,9 @@ namespace Net60_ApiTemplate_20231.Services.Product
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
+            int userId = _loginDetailServices.GetClaim().UserId;
 
-            var getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == productId);
+            Models.Product? getProduct = _dbContext.Products.FirstOrDefault(f => f.ProductId == productId);
 
             getProduct.UpdatedDate = DateTime.Now;
             getProduct.UpdatedByUserId = userId;
@@ -92,7 +92,7 @@ namespace Net60_ApiTemplate_20231.Services.Product
             _dbContext.Update(getProduct);
             await _dbContext.SaveChangesAsync();
 
-            var dto = _mapper.Map<DeleteProductResponseDto>(getProduct);
+            DeleteProductResponseDto dto = _mapper.Map<DeleteProductResponseDto>(getProduct);
 
             Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 
@@ -105,11 +105,11 @@ namespace Net60_ApiTemplate_20231.Services.Product
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
+            int userId = _loginDetailServices.GetClaim().UserId;
 
-            var getProduct = await _dbContext.Products.FirstOrDefaultAsync(f => f.ProductId == productId);
+            Models.Product? getProduct = await _dbContext.Products.FirstOrDefaultAsync(f => f.ProductId == productId);
 
-            var dto = _mapper.Map<ProductDto>(getProduct);
+            ProductDto dto = _mapper.Map<ProductDto>(getProduct);
 
             Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 

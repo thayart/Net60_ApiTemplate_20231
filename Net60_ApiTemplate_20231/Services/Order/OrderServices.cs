@@ -32,12 +32,12 @@ namespace Net60_ApiTemplate_20231.Services.Order
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
-            var orders = _mapper.Map<Models.Order>(orderRequestDto);
+            int userId = _loginDetailServices.GetClaim().UserId;
+            Models.Order orders = _mapper.Map<Models.Order>(orderRequestDto);
 
             // Set Order Table
             orders.OrderId = Guid.NewGuid();
-            orders.ItemCount = orderRequestDto.OrderDetails.Count();
+            orders.ItemCount = orderRequestDto.OrderDetails == null ? 0 : orderRequestDto.OrderDetails.Count();
             orders.CreatedByUserId = userId;
             orders.CreatedDate = DateTime.Now;
             orders.UpdatedByUserId = userId;
@@ -60,7 +60,7 @@ namespace Net60_ApiTemplate_20231.Services.Order
             await _dbContext.SaveChangesAsync();
 
 
-            var dto = _mapper.Map<OrderResponseDto>(orders);
+            OrderResponseDto dto = _mapper.Map<OrderResponseDto>(orders);
 
             Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 
@@ -73,10 +73,9 @@ namespace Net60_ApiTemplate_20231.Services.Order
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
-            List<OrderDetail> orderDetails = new List<OrderDetail>();
-            var getOrder = _dbContext.Orders.FirstOrDefault(f => f.OrderId == orderId);
-            var getOrderDetail = _dbContext.OrderDetails.Where(f => f.OrderId == orderId).ToList();
+            int userId = _loginDetailServices.GetClaim().UserId;
+            Models.Order? getOrder = _dbContext.Orders.FirstOrDefault(f => f.OrderId == orderId);
+            List<OrderDetail> getOrderDetail = _dbContext.OrderDetails.Where(f => f.OrderId == orderId).ToList();
 
             // Set Order Table
             getOrder.UpdatedDate = DateTime.Now;
@@ -94,7 +93,7 @@ namespace Net60_ApiTemplate_20231.Services.Order
             _dbContext.Update(getOrder);
             await _dbContext.SaveChangesAsync();
 
-            var dto = _mapper.Map<DeleteOrderResponseDto>(getOrder);
+            DeleteOrderResponseDto dto = _mapper.Map<DeleteOrderResponseDto>(getOrder);
 
             Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 
@@ -107,12 +106,10 @@ namespace Net60_ApiTemplate_20231.Services.Order
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var userId = _loginDetailServices.GetClaim().UserId;
-            List<OrderDetail> orderDetails = new List<OrderDetail>();
-            var getOrder =await _dbContext.Orders.FirstOrDefaultAsync(f => f.OrderId == orderId);
+            int userId = _loginDetailServices.GetClaim().UserId;
+            Models.Order? getOrder = await _dbContext.Orders.FirstOrDefaultAsync(f => f.OrderId == orderId);
 
-
-            var dto = _mapper.Map<OrderDto>(getOrder);
+            OrderDto dto = _mapper.Map<OrderDto>(getOrder);
 
             Log.Debug("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
 

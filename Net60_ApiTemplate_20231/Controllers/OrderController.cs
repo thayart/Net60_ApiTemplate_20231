@@ -30,7 +30,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _orderServices.CreateOrder(orderRequestDto);
+            OrderResponseDto result = await _orderServices.CreateOrder(orderRequestDto);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -45,7 +45,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _orderServices.DeleteOrder(orderId);
+            DeleteOrderResponseDto result = await _orderServices.DeleteOrder(orderId);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
@@ -60,7 +60,7 @@ namespace Net60_ApiTemplate_20231.Controllers
 
             Log.Debug("[{_serviceName}] - Started: {date}", _serviceName, DateTime.Now);
 
-            var result = await _orderServices.GetOrderById(orderId);
+            OrderDto result = await _orderServices.GetOrderById(orderId);
 
 
             Log.Information("[{_serviceName}] - Sussess: {date}", _serviceName, DateTime.Now);
