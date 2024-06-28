@@ -15,7 +15,7 @@ namespace Net60_ApiTemplate_20231.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class OrderController : ControllerBase
     {
         private readonly IOrderServices _orderServices;

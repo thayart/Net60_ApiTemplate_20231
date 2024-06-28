@@ -119,10 +119,9 @@ namespace Net60_ApiTemplate_20231.Services.Order
 
             // Setup GetData
             var getOrder = await _dbContext.Orders.FirstOrDefaultAsync(f => f.OrderId == orderId);
-            // var getOrderDetail = await _dbContext.OrderDetails.Where(f => f.OrderId == orderId).ToListAsync();
-            var getOrderDetail = await _dbContext.OrderDetails.Include(i => i.ProductId).ToListAsync();
-
-
+            //var getOrderDetail = await _dbContext.OrderDetails.Where(f => f.OrderId == orderId).ToListAsync();
+            var getOrderDetail = await _dbContext.OrderDetails.Where(w => w.OrderId == orderId).Include("Product").AsSplitQuery().ToListAsync();
+          
             // Return Data MaptoDto
             var dto = _mapper.Map<OrderResponseDto>(getOrder);
 

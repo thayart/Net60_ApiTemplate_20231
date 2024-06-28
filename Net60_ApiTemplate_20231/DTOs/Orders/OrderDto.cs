@@ -49,11 +49,11 @@ namespace Net60_ApiTemplate_20231.DTOs.Orders
     {
         public Guid ProductId { get; set; }
         public int ProductQuantity { get; set; }
+        public string ProductName { get; set; }
         public decimal ProductPrice { get; set; }
         public int CreatedByUserId { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool isActive { get; set; }
-        public ProductDto? Products { get; set; }
     }
 
     public class DeleteOrderResponseDto
