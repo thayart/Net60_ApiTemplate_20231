@@ -15,7 +15,7 @@ namespace Net60_ApiTemplate_20231.Controllers
     /// </summary>
     [Route("api/product")]
     [ApiController]
-    [Authorize]
+   // [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductServices _productServices;

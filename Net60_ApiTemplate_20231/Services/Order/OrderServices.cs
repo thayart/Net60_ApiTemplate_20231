@@ -9,7 +9,6 @@ using Net60_ApiTemplate_20231.Models;
 using Net60_ApiTemplate_20231.Services.Auth;
 using Net60_ApiTemplate_20231.Services.Product;
 using Serilog;
-using static NuGet.Packaging.PackagingConstants;
 
 namespace Net60_ApiTemplate_20231.Services.Order
 {

@@ -2,7 +2,9 @@
 using Net60_ApiTemplate_20231.DTOs;
 using Net60_ApiTemplate_20231.DTOs.Orders;
 using Net60_ApiTemplate_20231.DTOs.Products;
+using Net60_ApiTemplate_20231.DTOs.Hospital;
 using Net60_ApiTemplate_20231.Models;
+using static Net60_ApiTemplate_20231.DTOs.Hospital.HospitalResultDto;
 
 namespace Net60_ApiTemplate_20231
 {
@@ -109,6 +111,13 @@ namespace Net60_ApiTemplate_20231
             // /// Delete Set
             // /// 
             CreateMap<Order , OrderDto>();
+            #endregion
+
+            #region Hospital
+            // /// 
+            // /// Create Set
+            // /// 
+
             #endregion
 
         }

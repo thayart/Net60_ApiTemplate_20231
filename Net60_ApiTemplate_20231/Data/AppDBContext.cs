@@ -19,10 +19,19 @@ namespace Net60_ApiTemplate_20231.Data
         {
         }
 
+        public virtual DbSet<HospitalMoph> HospitalMophs { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductGroup> ProductGroups { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+               //optionsBuilder.UseSqlServer("Data Source=NB-67-01-03\\SQLEXPRESS;Initial Catalog=SmileShop;Persist Security Info=True;User ID=sa;Password=Iyart1596.;Encrypt=True");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

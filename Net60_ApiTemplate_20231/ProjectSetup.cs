@@ -2,6 +2,7 @@
 using Net60_ApiTemplate_20231.Configurations;
 using Net60_ApiTemplate_20231.HostedServices;
 using Net60_ApiTemplate_20231.Services.Auth;
+using Net60_ApiTemplate_20231.Services.Hospital;
 using Net60_ApiTemplate_20231.Services.Order;
 using Net60_ApiTemplate_20231.Services.Product;
 using Net60_ApiTemplate_20231.Startups;
@@ -32,6 +33,8 @@ namespace Net60_ApiTemplate_20231
             services.AddScoped<IProductServices, ProductServices>();
 
             services.AddScoped<IOrderServices, OrderServices>();
+
+            services.AddScoped<IHospitalServices , HospitalServices>();
 
             // TODO: ตัวอย่างการเขียน RestSharp หากไม่ใช้ให้ลบ Folder Examples ทิ้ง
             // วิธีการเขียน RestSharp
