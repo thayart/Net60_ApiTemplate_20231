@@ -54,5 +54,13 @@ namespace Net60_ApiTemplate_20231.Models
         public string ProvinceName { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public DateTime? UpdateOrigin { get; set; }
+        [StringLength(150)]
+        public string SubdistrictAdjust { get; set; }
+        [StringLength(150)]
+        public string DistrictAdjust { get; set; }
+        [StringLength(150)]
+        public string ProvinceAdjust { get; set; }
+        [StringLength(255)]
+        public string HospitalNameAdjust { get; set; }
     }
 }

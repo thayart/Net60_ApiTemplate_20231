@@ -22,7 +22,7 @@ namespace Net60_ApiTemplate_20231.Controllers
         private readonly IHospitalServices _hosiptalServices;
         private readonly Serilog.ILogger _logger;
 
-        public HospitalController(IHospitalServices hosiptalServices, Serilog.ILogger? logger = null)
+        public HospitalController(IHospitalServices hosiptalServices  , Serilog.ILogger? logger = null)
         {
             _hosiptalServices = hosiptalServices;
             _logger = logger is null ? Log.ForContext("ServiceName", nameof(ProductController)) : logger.ForContext("ServiceName", nameof(ProductController));
@@ -35,7 +35,7 @@ namespace Net60_ApiTemplate_20231.Controllers
         /// <remarks>
         ///     No Remark
         /// </remarks>
-        [HttpPost(Name = "GetHospitalMaster")]
+        [HttpGet(Name = "GetHospitalMaster")]
         public async Task<ServiceResponse<RootResultHospital>> GetHospitalMaster()
         {
             
@@ -50,5 +50,28 @@ namespace Net60_ApiTemplate_20231.Controllers
             return ResponseResult.Success(result);
 
         }
+
+        /// <summary>
+        ///     GetHospitalMasterFile
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpGet("File", Name = "GetHospitalMasterFile")]
+        public async Task<ServiceResponse<RootResultHospital>> GetHospitalMasterFile()
+        {
+
+            const string actionName = nameof(GetHospitalMasterFile);
+
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
+
+            var result = await _hosiptalServices.AddHospitalByFile();
+
+            _logger.Information("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
+
+            return ResponseResult.Success(result);
+
+        }
+
     }
 }

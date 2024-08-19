@@ -229,6 +229,77 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
 
         }
 
+        public async Task<RootResultHospital> AddHospitalByFile()
+        {
+            const string actionName = nameof(AddHospitalByFile);
+            int updateRows = 0;
+            int insertRows = 0;
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
+
+            try
+            {
+                string projectDirectory = Directory.GetCurrentDirectory() + "\\wwwroot\\ImportFile";
+               
+                var getFile = Directory.GetFiles(projectDirectory).FirstOrDefault();
+
+                string csvData = File.ReadAllText(getFile);
+
+                int headerRows = 0;
+                foreach (var line in csvData.Split('\n'))
+                {
+                    if (headerRows != 0 && !string.IsNullOrEmpty(line))
+                    {
+                        string[] rowSplit = line.Split(',');
+                        string Codenine = rowSplit[0].Replace("\"=\"\"", "").Replace("\"\"\"", "");
+
+                        var insHospitals = new HospitalMoph();
+                        insHospitals.HospitalOriginId = headerRows;
+                        insHospitals.HospitalName = rowSplit[3];
+                        insHospitals.HospitalNineCode = rowSplit[0].Replace("\"=\"\"", "").Replace("\"\"\"", "");
+                        insHospitals.HospitalFiveCode = rowSplit[1].Replace("\"=\"\"", "").Replace("\"\"\"", "");
+                        insHospitals.HospitalLicence = rowSplit[2].Replace("\"=\"\"", "").Replace("\"\"\"", "");
+                        insHospitals.HospitalTypeName = rowSplit[5];
+                        insHospitals.IsActive = rowSplit[10] == "กำลังใช้งาน" ? true: false ;
+                        //insHospitals.No = rowSplit.Address.Number;
+                        //insHospitals.Moo = rowSplit.Address.Moo;
+                        //insHospitals.Room = rowSplit.Address.Room;
+                        //insHospitals.Floor = rowSplit.Address.Floor;
+                        //insHospitals.BuildingName = rowSplit.Address.Building;
+                        //insHospitals.VillageName = rowSplit.Address.Village;
+                        //insHospitals.Soi = rowSplit.Address.Alley;
+                        //insHospitals.Road = rowSplit.Address.Steet;
+                        //insHospitals.AddressDetail = rowSplit.Address.Details;
+                        //insHospitals.SubdistrictId = Convert.ToInt32(rowSplit.Address.Subdistrict_code);
+                        //insHospitals.SubdistrictName = rowSplit.Address.Subdistrict;
+                        //insHospitals.DistrictId = Convert.ToInt32(rowSplit.Address.District_code);
+                        //insHospitals.DistrictName = rowSplit.Address.District;
+                        //insHospitals.ProvinceId = Convert.ToInt32(rowSplit.Address.Province_code);
+                        //insHospitals.ProvinceName = rowSplit.Address.Province;
+                        //insHospitals.UpdateOrigin = rowSplit.Modified_date;
+                        insHospitals.UpdatedDate = DateTime.Now;
+
+                        //_dbContext.AddRange(insHospitals);
+
+                    }
+
+                    headerRows++;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            var dto = new RootResultHospital();
+            dto.Count = await _dbContext.HospitalMophs.CountAsync();
+            dto.Next = "Insert Data: " + insertRows + " -Update Data: " + updateRows;
+
+            _logger.Debug("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
+
+            return dto;
+
+        }
 
     }
 }

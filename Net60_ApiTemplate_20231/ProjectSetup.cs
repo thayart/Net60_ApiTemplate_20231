@@ -36,6 +36,7 @@ namespace Net60_ApiTemplate_20231
 
             services.AddScoped<IHospitalServices , HospitalServices>();
 
+
             // TODO: ตัวอย่างการเขียน RestSharp หากไม่ใช้ให้ลบ Folder Examples ทิ้ง
             // วิธีการเขียน RestSharp
             // https://github.com/SiamsmileDev/DevKnowledgeBase/blob/develop/Example%20Code/CSharp/RestSharp%20Example.md

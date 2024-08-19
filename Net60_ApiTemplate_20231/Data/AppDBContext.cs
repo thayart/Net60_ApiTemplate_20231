@@ -29,7 +29,7 @@ namespace Net60_ApiTemplate_20231.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-               //optionsBuilder.UseSqlServer("Data Source=NB-67-01-03\\SQLEXPRESS;Initial Catalog=SmileShop;Persist Security Info=True;User ID=sa;Password=Iyart1596.;Encrypt=True");
+// optionsBuilder.UseSqlServer("Data Source=NB-67-01-03\\SQLEXPRESS;Initial Catalog=SmileShop;Persist Security Info=True;User ID=sa;Password=Iyart1596.;Encrypt=True");
             }
         }
 
