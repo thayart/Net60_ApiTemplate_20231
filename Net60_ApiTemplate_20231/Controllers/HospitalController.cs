@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Net60_ApiTemplate_20231.DTOs.Hospital;
 using Net60_ApiTemplate_20231.DTOs.Orders;
@@ -17,6 +18,7 @@ namespace Net60_ApiTemplate_20231.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class HospitalController : ControllerBase
     {
         private readonly IHospitalServices _hosiptalServices;
@@ -73,5 +75,26 @@ namespace Net60_ApiTemplate_20231.Controllers
 
         }
 
+        /// <summary>
+        ///     GetHospitalMasterSf
+        /// </summary>
+        /// <remarks>
+        ///     No Remark
+        /// </remarks>
+        [HttpGet("Res", Name = "GetHospitalMasterSf")]
+        public async Task<ServiceResponse<RootResultHospital>> GetHospitalMasterSf()
+        {
+
+            const string actionName = nameof(GetHospitalMasterSf);
+
+            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
+
+            var result = await _hosiptalServices.AddHospitalSf();
+
+            _logger.Information("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
+
+            return ResponseResult.Success(result);
+
+        }
     }
 }

@@ -7,11 +7,14 @@ using Net60_ApiTemplate_20231.Configurations;
 using Net60_ApiTemplate_20231.Data;
 using Net60_ApiTemplate_20231.DTOs.Hospital;
 using Net60_ApiTemplate_20231.DTOs.Orders;
+using Net60_ApiTemplate_20231.Exceptions;
 using Net60_ApiTemplate_20231.Models;
 using Net60_ApiTemplate_20231.Services.Auth;
 using Net60_ApiTemplate_20231.Services.Order;
 using Net60_ApiTemplate_20231.Services.Product;
 using Newtonsoft.Json;
+using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using Serilog;
 using System.Net.Http;
 using static Net60_ApiTemplate_20231.DTOs.Hospital.HospitalResultDto;
@@ -26,13 +29,15 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
         private readonly ILoginDetailServices _loginDetailServices;
         private readonly Serilog.ILogger _logger;
         private readonly MophApiSettings _mophApiSettings;
+        private readonly MophClient _mophClient;
 
-        public HospitalServices(AppDBContext dbContext,
+        public HospitalServices (AppDBContext dbContext,
             IMapper mapper,
             IOptions<MophApiSettings> options,
             IHttpContextAccessor httpContext,
             ILoginDetailServices loginDetailServices,
-            Serilog.ILogger? logger = null)
+            Serilog.ILogger? logger = null
+            )
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -40,8 +45,9 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
             _loginDetailServices = loginDetailServices;
             _logger = logger is null ? Log.ForContext("ServiceName", nameof(HospitalServices)) : logger.ForContext("ServiceName", nameof(HospitalServices));
             _mophApiSettings = options.Value;
-
+        
         }
+
 
         private async Task<int> CountHospital(string Token)
         {
@@ -298,6 +304,13 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
             _logger.Debug("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
 
             return dto;
+
+        }
+
+        public async Task<RootResultHospital> AddHospitalSf()
+        {
+           
+            return null;
 
         }
 

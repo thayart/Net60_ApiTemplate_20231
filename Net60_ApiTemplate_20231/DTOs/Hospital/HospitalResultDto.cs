@@ -1,4 +1,6 @@
-﻿namespace Net60_ApiTemplate_20231.DTOs.Hospital
+﻿using Newtonsoft.Json;
+
+namespace Net60_ApiTemplate_20231.DTOs.Hospital
 {
     public class HospitalResultDto
     {
@@ -64,7 +66,9 @@
 
         public class RootTokensHospital
         {
+            [JsonProperty("refresh")]
             public string? Refresh { get; set; }
+            [JsonProperty("access")]
             public string? Access { get; set; }
         }
 
