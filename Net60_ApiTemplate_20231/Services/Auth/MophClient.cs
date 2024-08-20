@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Serializers.NewtonsoftJson;
+using System.Threading;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Net60_ApiTemplate_20231.DTOs.Hospital.HospitalResultDto;
 
 namespace Net60_ApiTemplate_20231.Services.Auth
@@ -41,6 +43,39 @@ namespace Net60_ApiTemplate_20231.Services.Auth
 
         private const string _clientName = nameof(MophClient);
 
+        public async Task<RootResultHospitalDto> GetCoundData()
+        {
+            _logger.Debug("[{ClientName}] GetCoundData", _clientName);
+            _logger.Verbose("[{ClientName}] GetCoundData [typeof={DeserializeType}]", _clientName, nameof(GetCoundData));
+
+            var request = new RestRequest(_setting.GetCountHealthOfficeUrl);
+            var response = await _client.GetAsync(request);
+
+            if (response == null || response.IsSuccessful == false)
+                throw new ApiException("Query Error");
+
+            _logger.Information("[{ClientName}] Query Successfully", _clientName);
+            _logger.Verbose("[{ClientName}] Query Response = {@response}", _clientName, response.Content);
+            return JsonConvert.DeserializeObject<RootResultHospitalDto>(response.Content);
+        }
+
+        public async Task<RootResultHospitalDto> GetData(int page)
+        {
+            _logger.Debug("[{ClientName}] GetCoundData", _clientName);
+            _logger.Verbose("[{ClientName}] GetCoundData [typeof={DeserializeType}]", _clientName, nameof(GetData));
+
+            var instantUrl = _setting.GetCountHealthOfficeUrl + "?page=" + page + "&page_size=1000";
+            var request = new RestRequest(instantUrl);
+            var response = await _client.GetAsync(request);
+            var result = new List<ResultHospitalDto>();
+            if (response == null || response.IsSuccessful == false)
+                throw new ApiException("Query Error");
+
+            _logger.Information("[{ClientName}] Query Successfully", _clientName);
+            _logger.Verbose("[{ClientName}] Query Response = {@response}", _clientName, response.Content);
+            return  JsonConvert.DeserializeObject<RootResultHospitalDto>(response.Content);
+        }
+
         public async Task<T?> Query<T>(string query, CancellationToken cancellationToken = default) where T : class
         {
             _logger.Debug("[{ClientName}] Query", _clientName);
@@ -58,7 +93,7 @@ namespace Net60_ApiTemplate_20231.Services.Auth
             return JsonConvert.DeserializeObject<T>(response.Content);
         }
 
-        public async Task<RootResultHospital> Create<T>(string objectName, T data, CancellationToken cancellationToken = default) where T : class
+        public async Task<RootResultHospitalDto> Create<T>(string objectName, T data, CancellationToken cancellationToken = default) where T : class
         {
             _logger.Debug("[{ClientName}] Create objectName = {objectName}", _clientName, objectName);
             _logger.Verbose("[{ClientName}] Create [objectName = {objectName}, data = {@data}]", _clientName, objectName, data);
@@ -72,7 +107,7 @@ namespace Net60_ApiTemplate_20231.Services.Auth
 
             _logger.Information("[{ClientName}] Create Successfully", _clientName);
             _logger.Verbose("[{ClientName}] Create Response = {@response}", _clientName, response.Content);
-            return JsonConvert.DeserializeObject<RootResultHospital>(response.Content);
+            return JsonConvert.DeserializeObject<RootResultHospitalDto>(response.Content);
         }
 
         public async Task<bool> Update<T>(string objectName, string id, T data, CancellationToken cancellationToken = default) where T : class

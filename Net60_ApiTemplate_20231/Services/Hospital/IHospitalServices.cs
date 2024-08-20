@@ -6,10 +6,10 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
 {
     public interface IHospitalServices
     {
-        Task<RootResultHospital> AddHospital();
-        Task<RootResultHospital> AddHospitalSf();
+        Task<RootResultHospitalDto> AddHospital();
+        Task<RootResultHospitalDto> AddHospitalSf();
 
-        Task<RootResultHospital> AddHospitalByFile();
+        Task<RootResultHospitalDto> AddHospitalByFile();
 
     }
 }

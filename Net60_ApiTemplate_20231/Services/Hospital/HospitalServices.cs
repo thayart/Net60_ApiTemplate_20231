@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Azure.Core;
+using Confluent.Kafka;
 using Humanizer;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +37,9 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
             IMapper mapper,
             IOptions<MophApiSettings> options,
             IHttpContextAccessor httpContext,
+            MophClient mophClient,
             ILoginDetailServices loginDetailServices,
-            Serilog.ILogger? logger = null
-            )
+            Serilog.ILogger? logger = null)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -45,7 +47,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
             _loginDetailServices = loginDetailServices;
             _logger = logger is null ? Log.ForContext("ServiceName", nameof(HospitalServices)) : logger.ForContext("ServiceName", nameof(HospitalServices));
             _mophApiSettings = options.Value;
-        
+            _mophClient = mophClient;
         }
 
 
@@ -55,7 +57,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
 
             _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
 
-            var datasCountHospital = new RootResultHospital();
+            var datasCountHospital = new RootResultHospitalDto();
             try
             {
                 using (HttpClient httpClient = new HttpClient())
@@ -70,7 +72,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
                     if (requestHospital.IsSuccessStatusCode == true)
                     {
                         var responseHospital = await requestHospital.Content.ReadAsStringAsync();
-                        datasCountHospital = JsonConvert.DeserializeObject<RootResultHospital>(responseHospital);
+                        datasCountHospital = JsonConvert.DeserializeObject<RootResultHospitalDto>(responseHospital);
 
                     }
                 }
@@ -85,7 +87,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
             return datasCountHospital.Count;
         }
 
-        public async Task<RootResultHospital> AddHospital()
+        public async Task<RootResultHospitalDto> AddHospital()
         {
             const string actionName = nameof(AddHospital);
             int updateRows = 0;
@@ -114,7 +116,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
                     if (requestToken.IsSuccessStatusCode == true)
                     {
                         var responseToken = await requestToken.Content.ReadAsStringAsync();
-                        var datasToken = JsonConvert.DeserializeObject<RootTokensHospital>(responseToken);
+                        var datasToken = JsonConvert.DeserializeObject<RootTokensHospitalDto>(responseToken);
 
                         // Go to Function Count Total Data
                         ResultCount = await CountHospital(datasToken.Access);
@@ -143,7 +145,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
                         if (requestHospital.IsSuccessStatusCode == true)
                         {
                             var responseHospital = await requestHospital.Content.ReadAsStringAsync();
-                            var datasHospital = JsonConvert.DeserializeObject<RootResultHospital>(responseHospital);
+                            var datasHospital = JsonConvert.DeserializeObject<RootResultHospitalDto>(responseHospital);
                             var tempAddHospitals = new List<HospitalMoph>();
                             foreach (var temp in datasHospital.Results)
                             {
@@ -225,7 +227,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
                 var msg = ex.Message;
             }
 
-            var dto = new RootResultHospital();
+            var dto = new RootResultHospitalDto();
             dto.Count = _dbContext.HospitalMophs.Count();
             dto.Next = "Insert Data: " + insertRows + " -Update Data: " + updateRows;
 
@@ -235,7 +237,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
 
         }
 
-        public async Task<RootResultHospital> AddHospitalByFile()
+        public async Task<RootResultHospitalDto> AddHospitalByFile()
         {
             const string actionName = nameof(AddHospitalByFile);
             int updateRows = 0;
@@ -297,7 +299,7 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
                 var msg = ex.Message;
             }
 
-            var dto = new RootResultHospital();
+            var dto = new RootResultHospitalDto();
             dto.Count = await _dbContext.HospitalMophs.CountAsync();
             dto.Next = "Insert Data: " + insertRows + " -Update Data: " + updateRows;
 
@@ -307,10 +309,24 @@ namespace Net60_ApiTemplate_20231.Services.Hospital
 
         }
 
-        public async Task<RootResultHospital> AddHospitalSf()
+        public async Task<RootResultHospitalDto> AddHospitalSf()
         {
-           
-            return null;
+            var dto = new List<ResultHospitalDto>();
+            var resultCount = await _mophClient.GetCoundData();
+
+            int perRecord = 1000;
+            int maxRound = (resultCount.Count / perRecord) + 1;
+            var getHospitalDB = await _dbContext.HospitalMophs.ToListAsync();
+            for (int i = 1; i <= maxRound; i++)
+            {
+                var resultData = await _mophClient.GetData(i);
+
+                dto.AddRange(resultData.Results);
+            }
+            var resultAdd = new RootResultHospitalDto();
+            resultAdd.Count = _dbContext.HospitalMophs.Count();
+
+            return resultAdd;
 
         }
 

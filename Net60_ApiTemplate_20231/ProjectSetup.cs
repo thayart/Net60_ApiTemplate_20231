@@ -40,9 +40,9 @@ namespace Net60_ApiTemplate_20231
             // วิธีการเขียน RestSharp
             // https://github.com/SiamsmileDev/DevKnowledgeBase/blob/develop/Example%20Code/CSharp/RestSharp%20Example.md
 
-            // services.Configure<ServiceURL>(configuration.GetSection("ServiceURL"));
+             services.Configure<MophApiSettings>(configuration.GetSection(MophApiSettings.MophApi));
             // services.AddSingleton<ShortLinkClient>();
-            // services.AddSingleton<SendSmsClient>();
+            services.AddSingleton<MophClient>();
 
             return services;
         }

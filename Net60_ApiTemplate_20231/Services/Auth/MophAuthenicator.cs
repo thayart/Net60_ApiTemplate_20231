@@ -94,7 +94,7 @@ namespace Net60_ApiTemplate_20231.Services.Auth
 
             // set token and expiration from unixtimestamp
             _tokenExpiration = DateTime.Now.AddMinutes(35).ToUniversalTime();
-            Token = $"{response.Data.Refresh} {response.Data.Access}";
+            Token = $"Bearer {response.Data.Access}";
 
             _logger.Information("[{ServiceName}] Get Token Successfully", _serviceName);
             return response.Data;
@@ -106,6 +106,8 @@ namespace Net60_ApiTemplate_20231.Services.Auth
             public string? Refresh { get; set; }
             [JsonProperty("access")]
             public string? Access { get; set; }
+            [JsonProperty("token_type")]
+            public string? TokenType { get; set; }
         }
 
     }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Net60_ApiTemplate_20231.DTOs.Hospital;
 using Net60_ApiTemplate_20231.DTOs.Orders;
 using Net60_ApiTemplate_20231.Models;
+using Net60_ApiTemplate_20231.Services.Auth;
 using Net60_ApiTemplate_20231.Services.Hospital;
 using Net60_ApiTemplate_20231.Services.Order;
 using Newtonsoft.Json;
@@ -18,13 +19,14 @@ namespace Net60_ApiTemplate_20231.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
     public class HospitalController : ControllerBase
     {
         private readonly IHospitalServices _hosiptalServices;
         private readonly Serilog.ILogger _logger;
 
-        public HospitalController(IHospitalServices hosiptalServices  , Serilog.ILogger? logger = null)
+        const string _controllerName = nameof(HospitalController);
+
+        public HospitalController(IHospitalServices hosiptalServices , Serilog.ILogger? logger = null)
         {
             _hosiptalServices = hosiptalServices;
             _logger = logger is null ? Log.ForContext("ServiceName", nameof(ProductController)) : logger.ForContext("ServiceName", nameof(ProductController));
@@ -38,16 +40,14 @@ namespace Net60_ApiTemplate_20231.Controllers
         ///     No Remark
         /// </remarks>
         [HttpGet(Name = "GetHospitalMaster")]
-        public async Task<ServiceResponse<RootResultHospital>> GetHospitalMaster()
+        public async Task<ServiceResponse<RootResultHospitalDto>> GetHospitalMaster()
         {
             
-            const string actionName = nameof(GetHospitalMaster);
-
-            _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
+            _logger.Debug("[{controllerName}] - GetHospitalMaster is Started: {date}", _controllerName, DateTime.Now);
 
             var result = await _hosiptalServices.AddHospital();
 
-            _logger.Information("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);
+            _logger.Information("[{actionName}] - Sussess: {date}", _controllerName, DateTime.Now);
 
             return ResponseResult.Success(result);
 
@@ -60,7 +60,7 @@ namespace Net60_ApiTemplate_20231.Controllers
         ///     No Remark
         /// </remarks>
         [HttpGet("File", Name = "GetHospitalMasterFile")]
-        public async Task<ServiceResponse<RootResultHospital>> GetHospitalMasterFile()
+        public async Task<ServiceResponse<RootResultHospitalDto>> GetHospitalMasterFile()
         {
 
             const string actionName = nameof(GetHospitalMasterFile);
@@ -82,13 +82,13 @@ namespace Net60_ApiTemplate_20231.Controllers
         ///     No Remark
         /// </remarks>
         [HttpGet("Res", Name = "GetHospitalMasterSf")]
-        public async Task<ServiceResponse<RootResultHospital>> GetHospitalMasterSf()
+        public async Task<ServiceResponse<RootResultHospitalDto>> GetHospitalMasterSf()
         {
 
             const string actionName = nameof(GetHospitalMasterSf);
 
             _logger.Debug("[{actionName}] - Started: {date}", actionName, DateTime.Now);
-
+            
             var result = await _hosiptalServices.AddHospitalSf();
 
             _logger.Information("[{actionName}] - Sussess: {date}", actionName, DateTime.Now);

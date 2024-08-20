@@ -4,7 +4,7 @@ namespace Net60_ApiTemplate_20231.DTOs.Hospital
 {
     public class HospitalResultDto
     {
-        public class AddressHospital            
+        public class AddressHospitalDto
         {
             public int Id { get; set; }
             public string? Moo { get; set; }
@@ -29,7 +29,7 @@ namespace Net60_ApiTemplate_20231.DTOs.Hospital
             public string? Subdistrict_code { get; set; }
         }
 
-        public class ResultHospital
+        public class ResultHospitalDto
         {
             public int Id { get; set; }
             public string? Name { get; set; }
@@ -45,7 +45,7 @@ namespace Net60_ApiTemplate_20231.DTOs.Hospital
             public string? Department { get; set; }
             public string? Department_code { get; set; }
             public bool Active { get; set; }
-            public AddressHospital Address { get; set; }
+            public AddressHospitalDto Address { get; set; }
             public string? Established_date { get; set; }
             public string? Elosed_date { get; set; }
             public string? Bed { get; set; }
@@ -56,15 +56,15 @@ namespace Net60_ApiTemplate_20231.DTOs.Hospital
             public List<object>? Notes { get; set; }
         }
 
-        public class RootResultHospital
+        public class RootResultHospitalDto
         {
             public int Count { get; set; }
             public string? Next { get; set; }
             public object Previous { get; set; }
-            public List<ResultHospital>? Results { get; set; }
+            public List<ResultHospitalDto>? Results { get; set; }
         }
 
-        public class RootTokensHospital
+        public class RootTokensHospitalDto
         {
             [JsonProperty("refresh")]
             public string? Refresh { get; set; }
